@@ -14,9 +14,29 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-# from django.contrib import admin
+from django.contrib import admin
+from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import path
 
+from FarmAPE import views
+from FarmAPE.views import registro_cliente, home, GestionInventarioListView, \
+    GestionInventarioUpdateView, GestionInventarioCreateView, CrearTransferenciaView, ListaTransferenciasView, \
+    MedicamentoListView
+
 urlpatterns = [
-    #    path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls),
+    path('register/', registro_cliente, name='registro'),
+    path('', LoginView.as_view(template_name='login.html'), name='login'),
+    path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
+    path('home/', home, name='home'),
+    path('inventario/', GestionInventarioListView.as_view(), name='gestion_inventario'),
+    path('inventario/editar/<int:pk>/', GestionInventarioUpdateView.as_view(), name='editar_inventario'),
+    path('inventario/nuevo/', GestionInventarioCreateView.as_view(), name='nuevo_inventario'),
+    path('transferencias/crear/', CrearTransferenciaView.as_view(), name='crear_transferencia'),
+    path('transferencias/', ListaTransferenciasView.as_view(), name='transferencias_list'),
+    path('medicamentos/', MedicamentoListView.as_view(), name='medicamento_list'),
+    path('factura/crear/', views.crear_factura, name='crear_factura'),
+    path('facturas/', views.ver_facturas, name='ver_facturas'),
+
 ]
+
