@@ -90,7 +90,7 @@ class GestionInventarioCreateView(CreateView):
 class CrearTransferenciaView(View):
     def get(self, request):
         form = TransferenciaForm()
-        return render(request, 'crear_transferencia.html', {'form': form})
+        return render(request, 'creaTrans.html', {'form': form})
 
     def post(self, request):
         form = TransferenciaForm(request.POST)
@@ -124,7 +124,7 @@ class CrearTransferenciaView(View):
 
             transferencia.save()  # Guardamos finalmente la transferencia
             return redirect('transferencias_list')
-        return render(request, 'crear_transferencia.html', {'form': form})
+        return render(request, 'creaTrans.html', {'form': form})
 
 
 class ListaTransferenciasView(View):
@@ -154,7 +154,7 @@ def crear_factura(request):
                 return redirect('ver_facturas')  # Redirige a la vista que mostrará todas las facturas creadas
         else:
             form = FacturaForm()
-        return render(request, 'crear_factura.html', {'form': form})
+        return render(request, 'creaFac.html', {'form': form})
 
 def ver_facturas(request):
         facturas = Factura.objects.all()
