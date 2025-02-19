@@ -21,7 +21,7 @@ from django.urls import path
 from FarmAPE import views
 from FarmAPE.views import registro_cliente, home, GestionInventarioListView, \
     GestionInventarioUpdateView, GestionInventarioCreateView, CrearTransferenciaView, ListaTransferenciasView, \
-    MedicamentoListView, CrearSucursalView, ListaSucursalesView
+    MedicamentoListView, CrearSucursalView, ListaSucursalesView, EliminarInventarioView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -39,6 +39,7 @@ urlpatterns = [
     path('facturas/', views.ver_facturas, name='ver_facturas'),
     path('sucursales/crear/', CrearSucursalView.as_view(), name='crear_sucursal'),
     path('sucursales/', ListaSucursalesView.as_view(), name='lista_sucursales'),
+    path('inventario/eliminar/<int:pk>/', EliminarInventarioView.as_view(), name='eliminar_inventario'),
 
 ]
 
