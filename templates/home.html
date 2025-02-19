@@ -66,6 +66,23 @@
             color: #555;
         }
 
+        .btn-contacto {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            color: white;
+            background-color: #28a745; /* Verde */
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-top: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-contacto:hover {
+            background-color: #218838; /* Verde oscuro hover */
+        }
+
         footer {
             text-align: center;
             padding: 1rem;
@@ -82,7 +99,6 @@
         <h1>Farmacia</h1>
         <nav>
             <ul>
-                <li><a href="/register/">Registro</a></li>
                 <li><a href="/">Login</a></li>
                 <li><a href="/home/">Home</a></li>
                 <li><a href="/inventario/">Inventario</a></li>
@@ -97,12 +113,15 @@
     </header>
 
     <main>
-        <h2>Bienvenido a la Plataforma de Gestión de Farmacias</h2>
-        <p>Gestiona tu inventario, transferencias y facturación de manera eficiente.</p>
+        <h2>Bienvenido al sistema de Gestión de Farmacias</h2>
+        <p>Gestiona tu inventario, transferencias y facturación</p>
+
+        <!-- Botón de Contáctanos con enlace de w.app -->
+        <a href="https://w.app/farmaciascurx" class="btn-contacto" target="_blank">Contáctanos</a>
     </main>
 
     <footer>
-        &copy; 2025 Farmacia. Todos los derechos reservados.
+        &copy; Página creada por Luis Blacio
     </footer>
 </body>
 </html>
