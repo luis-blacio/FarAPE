@@ -78,6 +78,16 @@
             color: white;
         }
 
+        .actions .btn-eliminar {
+            color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .actions .btn-eliminar:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+
         .pagination {
             display: flex;
             justify-content: center;
@@ -132,6 +142,7 @@
             <td>{{ inventario.cantidad }}</td>
             <td class="actions">
                 <a href="{% url 'editar_inventario' inventario.pk %}"><i class="fas fa-edit"></i> Editar</a>
+                <a href="{% url 'eliminar_inventario' inventario.pk %}" class="btn-eliminar"><i class="fas fa-trash"></i> Eliminar</a>
             </td>
         </tr>
         {% endfor %}

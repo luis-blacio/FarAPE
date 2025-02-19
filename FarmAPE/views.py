@@ -3,8 +3,7 @@ from django.http import HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import redirect, get_object_or_404, render
 from django.urls import reverse_lazy, reverse
 from django.views import View
-from django.views.generic import ListView, UpdateView, CreateView
-
+from django.views.generic import ListView, UpdateView, CreateView,DeleteView
 from .forms import RegistroClienteForm, InventarioForm, TransferenciaForm, MedicamentoForm, FacturaForm, SucursalForm
 from .models import Cliente, Farmacia, Sucursal, Medicamento, Factura, ItemFactura, Transferencia, Inventario
 
@@ -91,8 +90,8 @@ class CrearTransferenciaView(View):
             medicamento = transferencia.medicamento
             cantidad = transferencia.cantidad
 
-            inventario_origen = origen.inventario_set.filter(medicamento=medicamento).first()
-            inventario_destino = destino.inventario_set.filter(medicamento=medicamento).first()
+            inventario_origen = origen.inventarios.filter(medicamento=medicamento).first()  #
+            inventario_destino = destino.inventarios.filter(medicamento=medicamento).first()  #
 
             if inventario_origen and inventario_origen.cantidad >= cantidad:
                 inventario_origen.cantidad -= cantidad
@@ -111,6 +110,7 @@ class CrearTransferenciaView(View):
             transferencia.save()
             return redirect('transferencias_list')
         return render(request, 'creaTrans.html', {'form': form})
+
 
 
 class ListaTransferenciasView(ListView):
@@ -186,3 +186,8 @@ class ListaSucursalesView(ListView):
     model = Sucursal
     template_name = 'surcursal_list.html'
     context_object_name = 'sucursales'
+
+class EliminarInventarioView(DeleteView):
+    model = Inventario
+    template_name = 'confirmar_eliminacion.html'  # Template para confirmar la eliminación
+    success_url = reverse_lazy('gestion_inventario')  # Redirige a la gestión de inventario después de eliminar
