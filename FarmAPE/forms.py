@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 
-from FarmAPE.models import Inventario, Transferencia, Medicamento, Factura
+from FarmAPE.models import Inventario, Transferencia, Medicamento, Factura, Sucursal
 
 
 class RegistroClienteForm(forms.ModelForm):
@@ -52,8 +52,12 @@ class MedicamentoForm(forms.ModelForm):
 class FacturaForm(forms.ModelForm):
     class Meta:
         model = Factura
-        fields = ['numeroFactura', 'sucursal', 'fecha', 'cliente', 'total', 'metodoPago', 'opcion_entrega']
+        fields = ['numeroFactura', 'sucursal', 'fecha', 'cliente', 'metodoPago', 'opcion_entrega']
         widgets = {
             'fecha': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
-            'opcion_entrega': forms.Select(attrs={'class': 'custom-select'}),  # Añadir una clase personalizada al campo
         }
+
+class SucursalForm(forms.ModelForm):
+    class Meta:
+        model = Sucursal
+        fields = ['numeroSucursal', 'direccion', 'telefono','farmacia' ]
