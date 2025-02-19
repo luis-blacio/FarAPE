@@ -7,93 +7,90 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #e0f2e9;
-            color: #2d6a4f;
+            background-color: white;
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            color: #333;
         }
-
         h1 {
+            color: #166534;
             text-align: center;
-            color: #1b4332;
-            margin-bottom: 20px;
+            margin-top: 30px;
         }
-
-        .form-container {
-            max-width: 600px;
-            margin: 0 auto;
+        form {
+            background-color: white;
             padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin: 30px auto;
+            width: 50%;
             border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
-
-        .form-container form {
-            display: flex;
-            flex-direction: column;
+        label {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 5px;
+            display: block;
         }
-
-        .form-container form p {
+        input, select, button {
+            width: 100%;
+            padding: 12px;
             margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
         }
-
-        .form-container button {
-            padding: 10px 20px;
-            margin-top: 20px;
-            background-color: #2d6a4f;
+        input:focus, select:focus, button:focus {
+            border-color: #166534;
+            outline: none;
+        }
+        button {
+            background-color: #166534;
             color: white;
-            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+        }
+        button:hover {
+            background-color: #15803d;
+        }
+        .form-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0fdf4;
+        }
+        .btn-agregar-sucursal {
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            padding: 10px 20px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .form-container button:hover {
-            background-color: #1b4332;
-        }
-
-        .back-link {
-            display: block;
-            text-align: center;
-            margin-top: 20px;
+            margin-top: 10px;
             text-decoration: none;
-            color: #1b4332;
-            font-weight: bold;
-            padding: 10px 0;
-            border-top: 1px solid #ddd;
+            display: inline-block;
         }
-
-        .back-link:hover {
-            color: #2d6a4f;
-        }
-
-        input, select, textarea {
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 1em;
-        }
-
-        label {
-            font-weight: bold;
+        .btn-agregar-sucursal:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
+    <div class="form-container">
+        <form method="post">
+            <h1>Nuevo Inventario</h1>
+            {% csrf_token %}
+            {{ form.as_p }}
 
-<h1>Nuevo Inventario</h1>
+            <!-- Botón para crear inventario -->
+            <button type="submit">Crear Inventario</button>
 
-<div class="form-container">
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Crear Inventario</button>
-    </form>
-
-    <a href="{% url 'gestion_inventario' %}" class="back-link">Volver a la gestión de inventario</a>
-</div>
-
+            <!-- Botón para agregar sucursal -->
+            <a href="{% url 'crear_sucursal' %}" class="btn-agregar-sucursal">Agregar Sucursal</a>
+        </form>
+    </div>
 </body>
 </html>
