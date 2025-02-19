@@ -1,3 +1,4 @@
+<<<<<<< HEAD:Proyecto/templates/home.html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -106,3 +107,132 @@
     </footer>
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmacia - Home</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: white;
+            color: #333;
+        }
+
+        header {
+            background-color: #166534; /* Verde oscuro */
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        nav ul li {
+            margin: 0 1rem;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        nav ul li a:hover {
+            color: #a7f3d0; /* Verde claro hover */
+        }
+
+        main {
+            padding: 2rem;
+            text-align: center;
+        }
+
+        main h2 {
+            color: #166534;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        main p {
+            font-size: 1.2rem;
+            color: #555;
+        }
+
+        .btn-contacto {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            color: white;
+            background-color: #28a745; /* Verde */
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-top: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-contacto:hover {
+            background-color: #218838; /* Verde oscuro hover */
+        }
+
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background-color: #166534;
+            color: white;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Farmacia</h1>
+        <nav>
+            <ul>
+                <li><a href="/">Login</a></li>
+                <li><a href="/home/">Home</a></li>
+                <li><a href="/inventario/">Inventario</a></li>
+                <li><a href="/inventario/nuevo/">Nuevo Inventario</a></li>
+                <li><a href="/transferencias/">Transferencias</a></li>
+                <li><a href="/transferencias/crear/">Crear Transferencia</a></li>
+                <li><a href="/medicamentos/">Medicamentos</a></li>
+                <li><a href="/facturas/">Facturas</a></li>
+                <li><a href="/factura/crear/">Crear Factura</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h2>Bienvenido al sistema de Gestión de Farmacias</h2>
+        <p>Gestiona tu inventario, transferencias y facturación</p>
+
+        <!-- Botón de Contáctanos con enlace de w.app -->
+        <a href="https://w.app/farmaciascurx" class="btn-contacto" target="_blank">Contáctanos</a>
+    </main>
+
+    <footer>
+        &copy; Página creada por Luis Blacio <3
+    </footer>
+</body>
+</html>
+>>>>>>> origin/main:templates/home.html

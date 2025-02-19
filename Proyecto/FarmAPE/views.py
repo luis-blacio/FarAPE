@@ -1,34 +1,30 @@
 from django.contrib.auth import login
 from django.http import HttpResponseForbidden, HttpResponseRedirect
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import redirect, get_object_or_404, render
 from django.urls import reverse_lazy, reverse
 from django.views import View
-from django.views.generic import ListView, UpdateView, CreateView
-
-from .forms import RegistroClienteForm, InventarioForm, TransferenciaForm, MedicamentoForm, FacturaForm
-from .models import Cliente, Farmacia, Sucursal, Medicamento, Factura, ItemFactura, Transferencia
+from django.views.generic import ListView, UpdateView, CreateView,DeleteView
+from .forms import RegistroClienteForm, InventarioForm, TransferenciaForm, MedicamentoForm, FacturaForm, SucursalForm
+from .models import Cliente, Farmacia, Sucursal, Medicamento, Factura, ItemFactura, Transferencia, Inventario
 
 
 def registro_cliente(request):
     if request.method == 'POST':
         form = RegistroClienteForm(request.POST)
         if form.is_valid():
-            # Crear el usuario
             user = form.save(commit=False)
             user.set_password(form.cleaned_data['password'])
             user.save()
 
-            # Crear el cliente asociado
             Cliente.objects.create(
-                nombre=Cliente.nombre,
-                cedula=Cliente.cedula,  # Puedes reemplazar esto con otro dato si lo necesitas
-                telefono=Cliente.telefono,
-                email=Cliente.email
+                nombre=form.cleaned_data['nombre'],
+                cedula=form.cleaned_data['cedula'],
+                telefono=form.cleaned_data['telefono'],
+                email=form.cleaned_data['email']
             )
 
-            # Iniciar sesión automáticamente
             login(request, user)
-            return redirect('/')  # Redirige a la página principal o deseada
+            return redirect('/')
     else:
         form = RegistroClienteForm()
 
@@ -36,11 +32,9 @@ def registro_cliente(request):
 
 
 def home(request):
-    # Obtener las farmacias, sucursales y medicamentos para mostrar
     farmacias = Farmacia.objects.all()
     sucursales = Sucursal.objects.all()
     medicamentos = Medicamento.objects.all()
-
     return render(request, 'home.html', {
         'farmacias': farmacias,
         'sucursales': sucursales,
@@ -50,34 +44,30 @@ def home(request):
 
 class NoClienteMixin:
     def dispatch(self, request, *args, **kwargs):
-        # Verificar si el usuario tiene un objeto Cliente asociado
-        if hasattr(request.user, 'Cliente'):
-            # Si el usuario es cliente, lo redirigimos o mostramos un error
+        if hasattr(request.user, 'cliente'):
             return HttpResponseForbidden("No tienes permiso para acceder a esta página.")
         return super().dispatch(request, *args, **kwargs)
 
-from django.shortcuts import render
-from .models import Inventario
 
 class GestionInventarioListView(ListView):
     model = Inventario
     template_name = 'gestion_inventario.html'
     context_object_name = 'inventarios'
-    paginate_by = 10  # Paginación de 10 resultados por página
+    paginate_by = 10
 
-    # Filtrar inventarios de una sucursal (si se necesita)
     def get_queryset(self):
         return Inventario.objects.all()
+
 
 class GestionInventarioUpdateView(UpdateView):
     model = Inventario
     form_class = InventarioForm
     template_name = 'editar_inventario.html'
-    success_url = reverse_lazy('gestion_inventario')  # Redirige a la lista de inventarios
+    success_url = reverse_lazy('gestion_inventario')
 
     def form_valid(self, form):
-        # Aquí se pueden agregar más validaciones, por ejemplo, si el stock no puede ser negativo
         return super().form_valid(form)
+
 
 class GestionInventarioCreateView(CreateView):
     model = Inventario
@@ -86,51 +76,48 @@ class GestionInventarioCreateView(CreateView):
     success_url = reverse_lazy('gestion_inventario')
 
 
-
 class CrearTransferenciaView(View):
     def get(self, request):
         form = TransferenciaForm()
-        return render(request, 'crear_transferencia.html', {'form': form})
+        return render(request, 'creaTrans.html', {'form': form})
 
     def post(self, request):
         form = TransferenciaForm(request.POST)
         if form.is_valid():
             transferencia = form.save(commit=False)
-            # Obtenemos datos de la transferencia
             origen = transferencia.sucursal_origen
             destino = transferencia.sucursal_destino
             medicamento = transferencia.medicamento
             cantidad = transferencia.cantidad
 
-            # Verificamos el inventario en la sucursal de origen
-            inventario_origen = origen.inventario_list.filter(medicamento=medicamento).first()
-            inventario_destino = destino.inventario_list.filter(medicamento=medicamento).first()
+            inventario_origen = origen.inventarios.filter(medicamento=medicamento).first()  #
+            inventario_destino = destino.inventarios.filter(medicamento=medicamento).first()  #
 
             if inventario_origen and inventario_origen.cantidad >= cantidad:
-                # Reducimos inventario en origen
                 inventario_origen.cantidad -= cantidad
                 inventario_origen.save()
 
-                # Aumentamos inventario en destino o creamos uno nuevo
                 if inventario_destino:
                     inventario_destino.cantidad += cantidad
                     inventario_destino.save()
                 else:
-                    destino.inventario_list.create(medicamento=medicamento, cantidad=cantidad)
+                    Inventario.objects.create(sucursal=destino, medicamento=medicamento, cantidad=cantidad)
 
                 transferencia.estado = 'COMPLETADA'
             else:
                 transferencia.estado = 'CANCELADA'
 
-            transferencia.save()  # Guardamos finalmente la transferencia
+            transferencia.save()
             return redirect('transferencias_list')
-        return render(request, 'crear_transferencia.html', {'form': form})
+        return render(request, 'creaTrans.html', {'form': form})
 
 
-class ListaTransferenciasView(View):
-    def get(self, request):
-        transferencias = Transferencia.objects.all()
-        return render(request, 'lista_transferencias.html', {'transferencias': transferencias})
+
+class ListaTransferenciasView(ListView):
+    model = Transferencia
+    template_name = 'lista_transferencias.html'
+    context_object_name = 'transferencias'
+
 
 class MedicamentoListView(View):
     def get(self, request):
@@ -142,20 +129,65 @@ class MedicamentoListView(View):
         form = MedicamentoForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('/medicamentos')
+            return redirect('medicamento_list')
         medicamentos = Medicamento.objects.all()
         return render(request, 'medicamento_list.html', {'medicamentos': medicamentos, 'form': form})
 
-def crear_factura(request):
-        if request.method == 'POST':
-            form = FacturaForm(request.POST)
-            if form.is_valid():
-                form.save()
-                return redirect('ver_facturas')  # Redirige a la vista que mostrará todas las facturas creadas
-        else:
-            form = FacturaForm()
-        return render(request, 'crear_factura.html', {'form': form})
 
+def crear_factura(request):
+    if request.method == 'POST':
+        form = FacturaForm(request.POST)
+        if form.is_valid():
+            # Guardar la factura
+            factura = form.save(commit=False)
+            factura.total = 0  # Inicializar el total en 0
+            factura.save()
+
+            # Procesar los ítems de la factura
+            productos = request.POST.getlist('producto')
+            cantidades = request.POST.getlist('cantidad')
+            precios = request.POST.getlist('precio')
+
+            for producto_id, cantidad, precio in zip(productos, cantidades, precios):
+                if producto_id and cantidad and precio:
+                    medicamento = Medicamento.objects.get(id=producto_id)
+                    item_factura = ItemFactura(
+                        factura=factura,
+                        medicamento=medicamento,
+                        cantidad=int(cantidad),
+                        precio_unitario=float(precio)
+                    )
+                    item_factura.save()
+
+                    # Actualizar el total de la factura
+                    factura.total += float(precio) * int(cantidad)
+                    factura.save()
+
+            return redirect('ver_facturas')
+    else:
+        form = FacturaForm()
+
+    # Obtener la lista de medicamentos para el formulario
+    medicamentos = Medicamento.objects.all()
+    return render(request, 'creaFac.html', {'form': form, 'medicamentos': medicamentos})
 def ver_facturas(request):
-        facturas = Factura.objects.all()
-        return render(request, 'ver_facturas.html', {'facturas': facturas})
+    facturas = Factura.objects.all()
+    return render(request, 'ver_facturas.html', {'facturas': facturas})
+
+
+class CrearSucursalView(CreateView):
+    model = Sucursal
+    form_class = SucursalForm
+    template_name = 'agregar_surcursal.html'
+    success_url = reverse_lazy('lista_sucursales')
+
+
+class ListaSucursalesView(ListView):
+    model = Sucursal
+    template_name = 'surcursal_list.html'
+    context_object_name = 'sucursales'
+
+class EliminarInventarioView(DeleteView):
+    model = Inventario
+    template_name = 'confirmar_eliminacion.html'  # Template para confirmar la eliminación
+    success_url = reverse_lazy('gestion_inventario')  # Redirige a la gestión de inventario después de eliminar

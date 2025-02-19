@@ -21,7 +21,7 @@ from django.urls import path
 from FarmAPE import views
 from FarmAPE.views import registro_cliente, home, GestionInventarioListView, \
     GestionInventarioUpdateView, GestionInventarioCreateView, CrearTransferenciaView, ListaTransferenciasView, \
-    MedicamentoListView
+    MedicamentoListView, CrearSucursalView, ListaSucursalesView, EliminarInventarioView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,11 +32,14 @@ urlpatterns = [
     path('inventario/', GestionInventarioListView.as_view(), name='gestion_inventario'),
     path('inventario/editar/<int:pk>/', GestionInventarioUpdateView.as_view(), name='editar_inventario'),
     path('inventario/nuevo/', GestionInventarioCreateView.as_view(), name='nuevo_inventario'),
-    path('transferencias/crear/', CrearTransferenciaView.as_view(), name='crear_transferencia'),
+    path('transferencias/crear/', CrearTransferenciaView.as_view(), name='creaTrans'),
     path('transferencias/', ListaTransferenciasView.as_view(), name='transferencias_list'),
     path('medicamentos/', MedicamentoListView.as_view(), name='medicamento_list'),
-    path('factura/crear/', views.crear_factura, name='crear_factura'),
+    path('factura/crear/', views.crear_factura, name='creaFac'),
     path('facturas/', views.ver_facturas, name='ver_facturas'),
+    path('sucursales/crear/', CrearSucursalView.as_view(), name='crear_sucursal'),
+    path('sucursales/', ListaSucursalesView.as_view(), name='lista_sucursales'),
+    path('inventario/eliminar/<int:pk>/', EliminarInventarioView.as_view(), name='eliminar_inventario'),
 
 ]
 
